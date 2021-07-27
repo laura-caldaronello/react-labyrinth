@@ -37,7 +37,7 @@ class Square extends React.Component {
           backgroundColor: this.props.passed? 'blue' : 'lightblue',
         }}
       >
-        <i className={'fas fa-arrow-' + this.props.direction}></i>
+        {this.props.show? <i className={'fas fa-arrow-' + this.props.direction}></i> : ''}
       </div>
     );
   }
@@ -49,7 +49,16 @@ class Game extends React.Component {
     this.state = {
       path: [],
       directions: [],
+      solution: false,
+      randoms: [],
+      side: 10,
     };
+  }
+
+  show() {
+    this.setState({
+      solution: true,
+    });
   }
 
   go(border) {
@@ -112,49 +121,64 @@ class Game extends React.Component {
     console.log(myPath);
     console.log(myDirections);
 
+    var myRandoms = [];
+    for (let s = 0; s < (this.state.side * this.state.side * 4); s++) {
+      myRandoms.push(getRandomInt(2));
+    }
+    console.log(myRandoms);
+
     this.setState({
       path: myPath,
       directions: myDirections,
+      solution: false,
+      randoms: myRandoms,
     });
+
   }
 
+  
   render() {
-    const side = 10;
-    
-    //base
-    var structure = [];
-    for (let t = 0; t < side; t++) {
-      var row = [];
-      for (let i = 0; i < side; i++) {
-        row.push(<Square
-          key={'square-' + (t + 1) + '-' + (i + 1)}
-          passed={searchInArrayOfArrays(this.state.path,[t + 1,i + 1])? true : false}
-          up={1}
-          right={1}
-          down={1}
-          left={1}
-          direction={(searchInArrayOfArrays(this.state.path,[t + 1,i + 1]))? this.state.directions[whereInArrayOfArrays(this.state.path,[t + 1,i + 1])] : 0}
-          />);
-      }
-      structure.push(<div className="row" key={'row-' + (t + 1)}>{row}</div>)
-    }
 
     //percorso
     var tops = [];
     var rights = [];
     var bottoms = [];
     var lefts = [];
-    for (var i = 0; i < side; i++) {
+    for (var i = 0; i < this.state.side; i++) {
       tops.push([1,i + 1]);
-      rights.push([i + 1,side]);
-      bottoms.push([side,i + 1]);
+      rights.push([i + 1,this.state.side]);
+      bottoms.push([this.state.side,i + 1]);
       lefts.push([i + 1,1]);
     }
-    var border = tops.concat(rights).concat(bottoms).concat(lefts);
+    var border = tops.concat(rights).concat(bottoms).concat(lefts);    
+
+    if (this.state.randoms != []) {
+      //base
+      var structure = [];
+      var counter = 0;
+      for (let t = 0; t < this.state.side; t++) {
+        var row = [];
+        for (let i = 0; i < this.state.side; i++) {
+          row.push(<Square
+            key={'square-' + (t + 1) + '-' + (i + 1)}
+            passed={(searchInArrayOfArrays(this.state.path,[t + 1,i + 1]) && this.state.solution)? true : false}
+            show={this.state.solution? true : false}
+            up={(searchInArrayOfArrays(this.state.path,[t + 1,i + 1]) && this.state.directions[whereInArrayOfArrays(this.state.path,[t + 1,i + 1])] === 'up') || this.state.directions[whereInArrayOfArrays(this.state.path,[t + 1,i + 1]) - 1] === 'down'? 0 : this.state.randoms[counter]}
+            right={(searchInArrayOfArrays(this.state.path,[t + 1,i + 1]) && this.state.directions[whereInArrayOfArrays(this.state.path,[t + 1,i + 1])] === 'right') || this.state.directions[whereInArrayOfArrays(this.state.path,[t + 1,i + 1]) - 1] === 'left'? 0 : this.state.randoms[counter + 1]}
+            down={(searchInArrayOfArrays(this.state.path,[t + 1,i + 1]) && this.state.directions[whereInArrayOfArrays(this.state.path,[t + 1,i + 1])] === 'down') || this.state.directions[whereInArrayOfArrays(this.state.path,[t + 1,i + 1]) - 1] === 'up'? 0 : this.state.randoms[counter + 2]}
+            left={(searchInArrayOfArrays(this.state.path,[t + 1,i + 1]) && this.state.directions[whereInArrayOfArrays(this.state.path,[t + 1,i + 1])] === 'left') || this.state.directions[whereInArrayOfArrays(this.state.path,[t + 1,i + 1]) - 1] === 'right'? 0 : this.state.randoms[counter + 3]}
+            direction={(searchInArrayOfArrays(this.state.path,[t + 1,i + 1]))? this.state.directions[whereInArrayOfArrays(this.state.path,[t + 1,i + 1])] : 0}
+            />);
+            counter = counter + 4;
+        }
+        structure.push(<div className="row" key={'row-' + (t + 1)}>{row}</div>)
+      }
+    }
 
     return (
       <div>
         <button className="new" onClick={() => this.go(border)}>Nuovo</button>
+        <button className="solution" onClick={() => this.show()}>Soluzione</button>
         <div className="structure">{structure}</div>
       </div>
     );
