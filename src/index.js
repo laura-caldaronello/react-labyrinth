@@ -191,6 +191,7 @@ class Game extends React.Component {
   go(border,tops,rights,bottoms,lefts) {
     var start = border[Math.floor(Math.random() * border.length)];
     var first = 0;
+    first++;
 
     //creare il path da capo
     var level3 = 0;
@@ -223,11 +224,11 @@ class Game extends React.Component {
             else if (searchInArrayOfArrays(lefts,start)) {
               direction = 'right';
             }
+            first++;
           }
           else {
             direction = ['up','right','down','left'][getRandomInt(4) + 1];
           }
-          first++;
           var currentTry = [current[0],current[1]];
           switch (direction) {
             case 'up':
@@ -256,7 +257,7 @@ class Game extends React.Component {
         }
       } while (!searchInArrayOfArrays(border,currentTry));
       console.log(myPath.length);
-      console.log(myPath);
+      console.log(myDirections);
       if (level3 > 100) {
         break;
       }
