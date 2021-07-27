@@ -2,20 +2,42 @@ import React from 'react';
 import ReactDOM, { render } from 'react-dom';
 import './index.css';
 
+function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
+}
+
+function searchInArrayOfArrays(bigArray,smallArray){
+  for (let i = 0; i < bigArray.length; i++) {
+    if (bigArray[i].toString() === smallArray.toString()) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function whereInArrayOfArrays(bigArray,smallArray){
+  for (let i = 0; i < bigArray.length; i++) {
+    if (bigArray[i].toString() === smallArray.toString()) {
+      return i;
+    }
+  }
+  return -1;
+}
+
 class Square extends React.Component {
   render() {
     return (
       <div
         className="square"
         style={{
-          borderTop: this.props.top + 'px solid black',
+          borderTop: this.props.up + 'px solid black',
           borderRight: this.props.right + 'px solid black',
-          borderBottom: this.props.bottom + 'px solid black',
+          borderBottom: this.props.down + 'px solid black',
           borderLeft: this.props.left + 'px solid black',
           backgroundColor: this.props.passed? 'blue' : 'lightblue',
         }}
       >
-        <i class={'fas fa-arrow-' + this.props.direction}>{this.props.direction}</i>
+        <i className={'fas fa-arrow-' + this.props.direction}></i>
       </div>
     );
   }
@@ -39,7 +61,8 @@ class Game extends React.Component {
 
     do {
       level3++;
-      if (level3 > 100) {
+      if (level1 > 100) {
+        alert('Riprova!');
         break;
       }
       var myPath = [];
@@ -47,7 +70,7 @@ class Game extends React.Component {
       myPath.push(start);
       do {
         level2++;
-        if (level2 > 100) {
+        if (level1 > 100) {
           break;
         }
         var last = myPath[myPath.length - 1];
@@ -57,19 +80,19 @@ class Game extends React.Component {
           if (level1 > 100) {
             break;
           }
-          var direction = getRandomInt(4) + 1;
+          var direction = ['up','right','down','left'][getRandomInt(4) + 1];
           var currentTry = [current[0],current[1]];
           switch (direction) {
-            case 1:
+            case 'up':
               currentTry[0]--;
               break;
-            case 2:
+            case 'right':
               currentTry[1]++;
               break;
-            case 3:
+            case 'down':
               currentTry[0]++;
               break;
-            case 4:
+            case 'left':
               currentTry[1]--;
               break;
             default:
@@ -82,10 +105,12 @@ class Game extends React.Component {
           currentTry[1] <= 10
         ) || searchInArrayOfArrays(myPath,currentTry));
         myPath.push(currentTry);
-        console.log(direction);
         myDirections.push(direction);
       } while (!searchInArrayOfArrays(border,currentTry) && myPath.length < 50);
     } while (myPath.length < 10)
+
+    console.log(myPath);
+    console.log(myDirections);
 
     this.setState({
       path: myPath,
@@ -98,22 +123,18 @@ class Game extends React.Component {
     
     //base
     var structure = [];
-    var counter = 0;
     for (let t = 0; t < side; t++) {
       var row = [];
       for (let i = 0; i < side; i++) {
-        if (searchInArrayOfArrays(this.state.path,[i + 1,t + 1])) {
-          counter++;
-        };
         row.push(<Square
-          key={'square-' + (i + 1) + '-' + (t + 1)}
-          passed={searchInArrayOfArrays(this.state.path,[i + 1,t + 1])? true : false}
-          top={1}
+          key={'square-' + (t + 1) + '-' + (i + 1)}
+          passed={searchInArrayOfArrays(this.state.path,[t + 1,i + 1])? true : false}
+          up={1}
           right={1}
-          bottom={1}
+          down={1}
           left={1}
-          direction={(searchInArrayOfArrays(this.state.path,[i + 1,t + 1]))? this.state.directions[counter] : 0}
-        />);
+          direction={(searchInArrayOfArrays(this.state.path,[t + 1,i + 1]))? this.state.directions[whereInArrayOfArrays(this.state.path,[t + 1,i + 1])] : 0}
+          />);
       }
       structure.push(<div className="row" key={'row-' + (t + 1)}>{row}</div>)
     }
@@ -142,15 +163,3 @@ class Game extends React.Component {
 
 ReactDOM.render(<Game />, document.getElementById("root"));
 
-function getRandomInt(max) {
-  return Math.floor(Math.random() * max);
-}
-
-function searchInArrayOfArrays(bigArray,smallArray){
-  for (let i = 0; i < bigArray.length; i++) {
-    if (bigArray[i].toString() === smallArray.toString()) {
-      return true;
-    }
-  }
-  return false;
-}
