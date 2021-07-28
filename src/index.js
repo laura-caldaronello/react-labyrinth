@@ -53,8 +53,8 @@ function upBlock(i,t,path,tops,directions,randoms,counter,side) {
     //non fai parte del percorso
     else {
       //la parte sopra ha gi`a il bordo
-      if (randoms[counter - side] === 1) {
-        return 0;
+      if (randoms[counter - (side * 4)] === 1) {
+        return randoms[counter];
       }
       //altro
       else {
@@ -83,8 +83,8 @@ function rightBlock(i,t,path,rights,directions,randoms,counter,side) {
       }
     }
     else {
-      if (randoms[counter + 1] === 1) {
-        return 0;
+      if (randoms[counter + 4] === 1) {
+        return randoms[counter];
       }
       else {
         return randoms[counter];
@@ -112,8 +112,8 @@ function downBlock(i,t,path,downs,directions,randoms,counter,side) {
       }
     }
     else {
-      if (randoms[counter + side] === 1) {
-        return 0;
+      if (randoms[counter + (side * 4)] === 1) {
+        return randoms[counter];
       }
       else {
         return randoms[counter];
@@ -141,8 +141,8 @@ function leftBlock(i,t,path,lefts,directions,randoms,counter,side) {
       }
     }
     else {
-      if (randoms[counter - 1] === 1) {
-        return 0;
+      if (randoms[counter - 4] === 1) {
+        return randoms[counter];
       }
       else {
         return randoms[counter];
@@ -184,18 +184,17 @@ class Game extends React.Component {
 
   show() {
     this.setState({
-      solution: true,
+      solution: !this.state.solution,
     });
   }
 
   go(border,tops,rights,bottoms,lefts) {
     var start = border[Math.floor(Math.random() * border.length)];
-    var first = 0;
-    first++;
-
+    
     //creare il path da capo
     var level3 = 0;
     do {
+      var first = 0;
       level3++;
       var myPath = [];
       var myDirections= [];
@@ -224,11 +223,13 @@ class Game extends React.Component {
             else if (searchInArrayOfArrays(lefts,start)) {
               direction = 'right';
             }
-            first++;
+            first = 1;
           }
           else {
-            direction = ['up','right','down','left'][getRandomInt(4) + 1];
+            direction = ['up','right','down','left'][getRandomInt(4)];
           }
+          console.log(first);
+          console.log(direction);
           var currentTry = [current[0],current[1]];
           switch (direction) {
             case 'up':
@@ -256,8 +257,6 @@ class Game extends React.Component {
           break;
         }
       } while (!searchInArrayOfArrays(border,currentTry));
-      console.log(myPath.length);
-      console.log(myDirections);
       if (level3 > 100) {
         break;
       }
@@ -267,6 +266,16 @@ class Game extends React.Component {
     for (let s = 0; s < (this.state.side * this.state.side * 4); s++) {
       myRandoms.push(getRandomInt(2));
     }
+    for (let s = 0; s < ((this.state.side * this.state.side) - 4); s++) {
+      if (myRandoms[s * 4] === 1) {
+        myRandoms[(s * 4) + 4] = 0;
+      }
+    }
+    for (let s = 0; s < ((this.state.side * this.state.side) - this.state.side); s++) {
+      if (myRandoms[s * this.state.side] === 1) {
+        myRandoms[(s * this.state.side) + this.state.side] = 0;
+      }
+    }
 
     this.setState({
       path: myPath,
@@ -274,6 +283,9 @@ class Game extends React.Component {
       solution: false,
       randoms: myRandoms,
     });
+
+    console.log(myPath);
+    console.log('________________________________________');
 
   }
 
