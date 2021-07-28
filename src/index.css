@@ -3,6 +3,10 @@ body {
   padding: 0;
 }
 
+.noMargin {
+  display: flex;
+}
+
 .horizontal {
   display: inline-block;
   height: 2px;

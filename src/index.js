@@ -38,9 +38,9 @@ class Vertical extends React.Component {
     return (
       <div 
         className="vertical"
-        //style={
-          
-        //}
+        style={{
+          marginRight: this.props.marginRight + 'px',
+        }}
       ></div>
     );
   }
@@ -70,21 +70,32 @@ class Game extends React.Component {
 
   render() {
 
+    var structure = [];
+    for (var r = 0; r < this.state.side; r++) {
+      var rowHorizontal = [];
+      for (let i = 0; i < this.state.side; i++) {
+        rowHorizontal.push(<Horizontal key={'horizontal-' + r + '-' + i}/>);
+      }
+      var rowVertical = [];
+      for (let i = 0; i < this.state.side; i++) {
+        rowVertical.push(<Vertical 
+          key={'vertical-' + r + '-' + i}
+          marginRight={this.state.side * 2}
+        />);
+      }
+      structure.push(<div className="noMargin">{rowHorizontal}</div>,<div className="noMargin">{rowVertical}</div>);
+    }
     var rowHorizontal = [];
     for (let i = 0; i < this.state.side; i++) {
-      rowHorizontal.push(<Horizontal key={'horizontal-' + i}/>);
+      rowHorizontal.push(<Horizontal key={'horizontal-' + r + '-' + i}/>);
     }
-    var rowVertical = [];
-    for (let i = 0; i < this.state.side; i++) {
-      rowVertical.push(<Vertical key={'vertical-' + i}/>);
-    }
+    structure.push(<div className="noMargin">{rowHorizontal}</div>);
 
     return (
       <div>
         <button className="new" onClick={() => this.go()}>Nuovo</button>
         <button className="solution" onClick={() => this.show()}>Soluzione</button>
-        <div>{rowHorizontal}</div>
-        <div>{rowVertical}</div>
+        <div>{structure}</div>
       </div>
     );
   }
