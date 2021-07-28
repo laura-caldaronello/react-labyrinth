@@ -157,38 +157,28 @@ class Game extends React.Component {
     do {
       do {
         current = myPath[myPath.length - 1];
-        do {
-          currentTry = [current[0],current[1]];
-          direction = ['top','right','bottom','left'][getRandomInt(4)];
-          if (direction === 'top') {
-            currentTry[0]--;
-          }
-          else if (direction === 'right') {
-            currentTry[1]++;
-          }
-          else if (direction === 'bottom') {
-            currentTry[0]++;
-          }
-          else if (direction === 'left') {
-            currentTry[1]--;
-          }
-        } while (
-            myDirections[myDirections.length - 1] === direction + 2 || myDirections[myDirections.length - 1] === direction - 2 //non posso tornare indietro alla casella precedente
-          )
+        currentTry = [current[0],current[1]];
+        direction = ['top','right','bottom','left'][getRandomInt(4)];
+        if (direction === 'top') {
+          currentTry[0]--;
+        }
+        else if (direction === 'right') {
+          currentTry[1]++;
+        }
+        else if (direction === 'bottom') {
+          currentTry[0]++;
+        }
+        else if (direction === 'left') {
+          currentTry[1]--;
+        }
         myDirections.push(direction);
         myPath.push(currentTry);
       } while (!searchInArrayOfArrays(border,myPath[myPath.length - 1])) //finch`e non tocco il bordo
+            
+      //while (areThereDuplicates(myPath)) {
+      //  myPath = deleteFirstCircle(myPath);
+      //}
     } while (myPath.length < 10) //non troppo corto
-
-    for (let i = 0; i < myPath.length; i++) {
-      console.log(myPath[i]);
-    }
-
-    console.log('____________________________________________');
-
-    //while (areThereDuplicates(myPath)) {
-    //  myPath = deleteFirstCircle(myPath);
-    //}
 
     for (let i = 0; i < myPath.length; i++) {
       console.log(myPath[i]);
