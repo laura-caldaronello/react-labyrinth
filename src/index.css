@@ -5,6 +5,8 @@ body {
 
 .noMargin {
   display: flex;
+  width: fit-content;
+  margin: 0 auto;
 }
 
 .horizontal {
@@ -19,6 +21,10 @@ body {
   width: 2px;
   background-color: black;
 }
+.square {
+  height: 38px;
+  width: 38px;
+}
 
 .row {
   height: 40px;
@@ -26,5 +32,4 @@ body {
 
 .structure {
   padding: 40px;
-  text-align: center;
 }
