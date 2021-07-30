@@ -13,13 +13,11 @@ body {
   display: inline-block;
   height: 2px;
   width: 40px;
-  background-color: black;
 }
 .vertical {
   display: inline-block;
   height: 40px;
   width: 2px;
-  background-color: black;
 }
 .square {
   height: 38px;
@@ -32,4 +30,5 @@ body {
 
 .structure {
   padding: 40px;
+  background-color: white;
 }

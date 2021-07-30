@@ -56,7 +56,7 @@ class Horizontal extends React.Component {
       <div
         className="horizontal"
         style={{
-          backgroundColor: this.props.passed? 'white' : 'black',
+          backgroundColor: (this.props.passed || (!this.props.border && this.props.randomColored))? 'white' : 'black',
         }}
       ></div>
     );
@@ -69,7 +69,7 @@ class Vertical extends React.Component {
       <div
         className="vertical"
         style={{
-          backgroundColor: this.props.passed? 'white' : 'black',
+          backgroundColor: (this.props.passed || (!this.props.border && this.props.randomColored))? 'white' : 'black',
         }}
       ></div>
     );
@@ -82,7 +82,7 @@ class Square extends React.Component {
       <div 
         className="square"
         style={{
-          backgroundColor: (this.props.passed && this.props.solution)? 'yellow' : 'lightgoldenrodyellow'
+          backgroundColor: (this.props.passed && this.props.solution)? 'yellow' : 'white'
         }}
       ></div>
     );
@@ -102,7 +102,7 @@ class Game extends React.Component {
   }
   
   //rendering
-  horizontalRender(r,i) {
+  horizontalRender(r,i,counter) {
     return <Horizontal
       key={'horizontal-' + r + '-' + i}
       border={(r === 0 || r === 20)? true : false}
@@ -112,9 +112,10 @@ class Game extends React.Component {
         (searchInArrayOfArrays(this.state.path,[r,i]) && r === 0) ||
         (searchInArrayOfArrays(this.state.path,[r - 1,i]) && r === 20)? true : false
       }
+      randomColored = {this.state.randoms[counter] === 1? true : false}
     />
   };
-  verticalRender(r,i) {
+  verticalRender(r,i,counter) {
     return <Vertical
       key={'vertical-' + r + '-' + i}
       border={(i === 0 || i === 20)? true : false}
@@ -124,6 +125,7 @@ class Game extends React.Component {
         (searchInArrayOfArrays(this.state.path,[r,i]) && i === 0) ||
         (searchInArrayOfArrays(this.state.path,[r,i - 1]) && i === 20)? true : false
       }
+      randomColored = {this.state.randoms[counter] === 1? true : false}
     />
   };
   squareRender(r,i) {
@@ -234,11 +236,17 @@ class Game extends React.Component {
       }
       
     }
+
+    var myRandoms = [];
+    for (let i = 0; i < ((this.state.side + 1) * (this.state.side + 1)) + ((this.state.side - 1) * (this.state.side - 1)); i++) {
+      myRandoms.push(getRandomInt(2));
+    }
     
     this.setState({
       path: myPath,
       directions: myDirections,
       solution: false,
+      randoms: myRandoms,
     });
 
   }
@@ -246,22 +254,27 @@ class Game extends React.Component {
   render() {
 
     var structure = [];
+    var counter = 0;
     for (var r = 0; r < this.state.side; r++) {
       var rowHorizontal = [];
       for (let i = 0; i < this.state.side; i++) {
-        rowHorizontal.push(this.horizontalRender(r,i));
+        rowHorizontal.push(this.horizontalRender(r,i,counter));
+        counter++;
       }
       var rowVertical = [];
       for (var i = 0; i < this.state.side; i++) {
-        rowVertical.push(this.verticalRender(r,i));
-        rowVertical.push(this.squareRender(r,i));
+        rowVertical.push(this.verticalRender(r,i,counter));
+        counter++;
+        rowVertical.push(this.squareRender(r,i,counter));
       }
-      rowVertical.push(this.verticalRender(r,i));
+      rowVertical.push(this.verticalRender(r,i,counter));
+      counter++;
       structure.push(<div className="noMargin" key={'row-horizontal-' + r}>{rowHorizontal}</div>,<div className="noMargin" key={'row-vertical-' + r}>{rowVertical}</div>);
     }
     rowHorizontal = [];
     for (let i = 0; i < this.state.side; i++) {
-      rowHorizontal.push(this.horizontalRender(r,i));
+      rowHorizontal.push(this.horizontalRender(r,i,counter));
+      counter++;
     }
     structure.push(<div className="noMargin" key={'row-horizontal-' + r}>{rowHorizontal}</div>);
 
