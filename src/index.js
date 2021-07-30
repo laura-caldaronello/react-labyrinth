@@ -41,7 +41,7 @@ function deleteFirstCircle(array) {
   for (let i = 0; i < array.length; i++) {
     for (let t = i + 1; t < array.length; t++) {
       if (array[i].toString() === array[t].toString()) {
-        array.splice(i + 1,t);
+        array.splice(i + 1,t - i);
         return array;
       }
     }
@@ -118,7 +118,7 @@ class Game extends React.Component {
     var rights = [];
     var bottoms = [];
     var lefts = [];
-    for (let i = 1; i < this.state.side - 1; i++) {
+    for (let i = 0; i < this.state.side; i++) {
       tops.push([0,i]);
       rights.push([i,this.state.side - 1]);
       bottoms.push([this.state.side - 1,i]);
@@ -127,63 +127,82 @@ class Game extends React.Component {
     
     //start
     var border = tops.concat(rights).concat(bottoms).concat(lefts);
-    var start = border[getRandomInt(border.length)];
-    var myPath = [];
-    myPath.push(start);
+    var start;
+    do {
+      start = border[getRandomInt(border.length)];
+    } while (
+      start.toString() === [0,0].toString() ||
+      start.toString() === [0,19].toString() ||
+      start.toString() === [19,0].toString() ||
+      start.toString() === [19,19].toString()
+    )
+    var myPathStart = [];
+    myPathStart.push(start);
 
-    var direction;
+    var directionStart;
+    var directions = ['top','right','bottom','left'];
     if (searchInArrayOfArrays(tops,start)) {
-      direction = 'bottom';
-      myPath.push([start[0] + 1,start[1]]);
+      directionStart = 'bottom';
+      myPathStart.push([start[0] + 1,start[1]]);
+      directions = directions.concat('right').concat('bottom').concat('left');
     }
     else if (searchInArrayOfArrays(rights,start)) {
-      direction = 'left';
-      myPath.push([start[0],start[1] - 1]);
+      directionStart = 'left';
+      myPathStart.push([start[0],start[1] - 1]);
+      directions = directions.concat('left').concat('bottom').concat('top');
     }
     else if (searchInArrayOfArrays(bottoms,start)) {
-      direction = 'top';
-      myPath.push([start[0] - 1,start[1]]);
+      directionStart = 'top';
+      myPathStart.push([start[0] - 1,start[1]]);
+      directions = directions.concat('right').concat('top').concat('left');
     }
     else if (searchInArrayOfArrays(lefts,start)) {
-      direction = 'right';
-      myPath.push([start[0],start[1] + 1]);
+      directionStart = 'right';
+      myPathStart.push([start[0],start[1] + 1]);
+      directions = directions.concat('right').concat('bottom').concat('top');
     }
-    var myDirections = [];
-    myDirections.push(direction);
 
     //prosecuzione
-    var current;
-    var currentTry;
-    do {
+    var currentSquare;
+    var newSquare;
+    var direction;
+    var myPath = [];
+    var myDirections = [];
+
+    while (myPath.length < 20) {
+      console.log('tentativo');
+      myPath = [myPathStart[0],myPathStart[1]];
+      myDirections = [];
+      myDirections.push(directionStart);
+
       do {
-        current = myPath[myPath.length - 1];
-        currentTry = [current[0],current[1]];
-        direction = ['top','right','bottom','left'][getRandomInt(4)];
+        currentSquare = myPath[myPath.length - 1];
+        newSquare = [currentSquare[0],currentSquare[1]];
+        direction = directions[getRandomInt(7)];
         if (direction === 'top') {
-          currentTry[0]--;
+          newSquare[0]--;
         }
         else if (direction === 'right') {
-          currentTry[1]++;
+          newSquare[1]++;
         }
         else if (direction === 'bottom') {
-          currentTry[0]++;
+          newSquare[0]++;
         }
         else if (direction === 'left') {
-          currentTry[1]--;
+          newSquare[1]--;
         }
         myDirections.push(direction);
-        myPath.push(currentTry);
-      } while (!searchInArrayOfArrays(border,myPath[myPath.length - 1])) //finch`e non tocco il bordo
-            
-      //while (areThereDuplicates(myPath)) {
-      //  myPath = deleteFirstCircle(myPath);
-      //}
-    } while (myPath.length < 10) //non troppo corto
+        myPath.push(newSquare);
+      } while (!searchInArrayOfArrays(border,currentSquare))
 
-    for (let i = 0; i < myPath.length; i++) {
-      console.log(myPath[i]);
+      myDirections.splice(myDirections.length - 1,1);
+      myPath.splice(myPath.length - 1,1);
+      while (areThereDuplicates(myPath)) {
+        myPath = deleteFirstCircle(myPath);
+      }
+      console.log(myPath.length);
     }
-
+    
     this.setState({
       path: myPath,
       directions: myDirections,
