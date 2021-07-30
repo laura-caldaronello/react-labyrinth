@@ -37,22 +37,28 @@ function areThereDuplicates(array) {
 }
 
 //elimino le figure chiuse
-function deleteFirstCircle(array) {
+function deleteFirstCircle(array,follow) {
   for (let i = 0; i < array.length; i++) {
     for (let t = i + 1; t < array.length; t++) {
       if (array[i].toString() === array[t].toString()) {
         array.splice(i + 1,t - i);
-        return array;
+        follow.splice(i,t - i);
+        return [array,follow];
       }
     }
   }
-  return array;
+  return [array,follow];
 }
 
 class Horizontal extends React.Component {
   render() {
     return (
-      <div className="horizontal"></div>
+      <div
+        className="horizontal"
+        style={{
+          backgroundColor: this.props.passed? 'white' : 'black',
+        }}
+      ></div>
     );
   }
 }
@@ -60,7 +66,12 @@ class Horizontal extends React.Component {
 class Vertical extends React.Component {
   render() {
     return (
-      <div className="vertical"></div>
+      <div
+        className="vertical"
+        style={{
+          backgroundColor: this.props.passed? 'white' : 'black',
+        }}
+      ></div>
     );
   }
 }
@@ -92,10 +103,28 @@ class Game extends React.Component {
   
   //rendering
   horizontalRender(r,i) {
-    return <Horizontal key={'horizontal-' + r + '-' + i}/>
+    return <Horizontal
+      key={'horizontal-' + r + '-' + i}
+      border={(r === 0 || r === 20)? true : false}
+      passed={
+        (searchInArrayOfArrays(this.state.path,[r,i]) && this.state.directions[whereInArrayOfArrays(this.state.path,[r,i]) - 1] === 'bottom') ||
+        (searchInArrayOfArrays(this.state.path,[r - 1,i]) && this.state.directions[whereInArrayOfArrays(this.state.path,[r,i])] === 'top') ||
+        (searchInArrayOfArrays(this.state.path,[r,i]) && r === 0) ||
+        (searchInArrayOfArrays(this.state.path,[r - 1,i]) && r === 20)? true : false
+      }
+    />
   };
   verticalRender(r,i) {
-    return <Vertical key={'vertical-' + r + '-' + i}/>
+    return <Vertical
+      key={'vertical-' + r + '-' + i}
+      border={(i === 0 || i === 20)? true : false}
+      passed={
+        (searchInArrayOfArrays(this.state.path,[r,i]) && this.state.directions[whereInArrayOfArrays(this.state.path,[r,i]) - 1] === 'right') ||
+        (searchInArrayOfArrays(this.state.path,[r,i - 1]) && this.state.directions[whereInArrayOfArrays(this.state.path,[r,i])] === 'left') ||
+        (searchInArrayOfArrays(this.state.path,[r,i]) && i === 0) ||
+        (searchInArrayOfArrays(this.state.path,[r,i - 1]) && i === 20)? true : false
+      }
+    />
   };
   squareRender(r,i) {
     return <Square 
@@ -168,9 +197,9 @@ class Game extends React.Component {
     var direction;
     var myPath = [];
     var myDirections = [];
+    var array = [];
 
     while (myPath.length < 20) {
-      console.log('tentativo');
       myPath = [myPathStart[0],myPathStart[1]];
       myDirections = [];
       myDirections.push(directionStart);
@@ -197,10 +226,13 @@ class Game extends React.Component {
 
       myDirections.splice(myDirections.length - 1,1);
       myPath.splice(myPath.length - 1,1);
+      array = [];
       while (areThereDuplicates(myPath)) {
-        myPath = deleteFirstCircle(myPath);
+        array = deleteFirstCircle(myPath,myDirections);
+        myPath = array[0];
+        myDirections = array[1];
       }
-      console.log(myPath.length);
+      
     }
     
     this.setState({
