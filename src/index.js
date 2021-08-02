@@ -56,7 +56,7 @@ class Horizontal extends React.Component {
       <div
         className="horizontal"
         style={{
-          backgroundColor: (this.props.passed || (!this.props.border && this.props.randomColored))? 'white' : 'black',
+          backgroundColor: (this.props.passed && this.props.solution)? 'lightgrey' : ((this.props.passed || (!this.props.border && this.props.randomColored))? 'white' : 'black'),
         }}
       ></div>
     );
@@ -69,7 +69,7 @@ class Vertical extends React.Component {
       <div
         className="vertical"
         style={{
-          backgroundColor: (this.props.passed || (!this.props.border && this.props.randomColored))? 'white' : 'black',
+          backgroundColor: (this.props.passed && this.props.solution)? 'lightgrey' : ((this.props.passed || (!this.props.border && this.props.randomColored))? 'white' : 'black'),
         }}
       ></div>
     );
@@ -82,7 +82,7 @@ class Square extends React.Component {
       <div 
         className="square"
         style={{
-          backgroundColor: (this.props.passed && this.props.solution)? 'yellow' : 'white'
+          backgroundColor: (this.props.passed && this.props.solution)? 'lightgrey' : 'white'
         }}
       ></div>
     );
@@ -113,6 +113,7 @@ class Game extends React.Component {
         (searchInArrayOfArrays(this.state.path,[r - 1,i]) && r === 20)? true : false
       }
       randomColored = {this.state.randoms[counter] === 1? true : false}
+      solution={this.state.solution? true : false}
     />
   };
   verticalRender(r,i,counter) {
@@ -126,6 +127,7 @@ class Game extends React.Component {
         (searchInArrayOfArrays(this.state.path,[r,i - 1]) && i === 20)? true : false
       }
       randomColored = {this.state.randoms[counter] === 1? true : false}
+      solution={this.state.solution? true : false}
     />
   };
   squareRender(r,i) {
@@ -238,7 +240,7 @@ class Game extends React.Component {
     }
 
     var myRandoms = [];
-    for (let i = 0; i < ((this.state.side + 1) * (this.state.side + 1)) + ((this.state.side - 1) * (this.state.side - 1)); i++) {
+    for (let i = 0; i < ((this.state.side + 1) * (this.state.side)) * 2; i++) {
       myRandoms.push(getRandomInt(2));
     }
     
@@ -279,9 +281,12 @@ class Game extends React.Component {
     structure.push(<div className="noMargin" key={'row-horizontal-' + r}>{rowHorizontal}</div>);
 
     return (
-      <div>
-        <button className="new" onClick={() => this.go()}>Nuovo</button>
-        <button className="solution" onClick={() => this.show()}>Soluzione</button>
+      <div className="container">
+        <h1>generatore di labirinti</h1>
+        <div className="button-container">
+          <button className="new" onClick={() => this.go()}>Nuovo</button>
+          <button className="solution" onClick={() => this.show()}>Soluzione</button>
+        </div>
         <div className="structure">{structure}</div>
       </div>
     );

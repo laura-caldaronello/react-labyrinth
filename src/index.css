@@ -1,6 +1,7 @@
 body {
   margin: 0;
-  padding: 0;
+  padding: 20px;
+  font-family: 'Gowun Dodum', sans-serif;
 }
 
 .noMargin {
@@ -8,27 +9,56 @@ body {
   width: fit-content;
   margin: 0 auto;
 }
+.noMargin:nth-of-type(2n) {
+  height: 28px;
+}
 
 .horizontal {
   display: inline-block;
   height: 2px;
-  width: 40px;
+  width: 30px;
 }
 .vertical {
   display: inline-block;
-  height: 40px;
+  height: 30px;
   width: 2px;
 }
 .square {
-  height: 38px;
-  width: 38px;
+  display: inline-block;
+  height: 28px;
+  width: 28px;
 }
 
 .row {
-  height: 40px;
+  height: 30px;
 }
 
 .structure {
-  padding: 40px;
+  padding: 30px;
   background-color: white;
+}
+
+.container {
+  text-align: center;
+}
+
+h1 {
+  text-transform: uppercase;
+}
+
+.button-container {
+  display: inline-block;
+  padding: 20px;
+}
+
+button {
+  height: 50px;
+  padding: 10px;
+  border-radius: 10px;
+  margin-right: 10px;
+  font-size: 1.2em;
+  font-weight: bold;
+  background-color: cadetblue;
+  color: white;
+  border-color: white;
 }
