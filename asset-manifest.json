@@ -1,0 +1,20 @@
+{
+  "files": {
+    "main.css": "/react-labyrinth/static/css/main.e7d71ea1.chunk.css",
+    "main.js": "/react-labyrinth/static/js/main.fc96456d.chunk.js",
+    "main.js.map": "/react-labyrinth/static/js/main.fc96456d.chunk.js.map",
+    "runtime-main.js": "/react-labyrinth/static/js/runtime-main.eae7df27.js",
+    "runtime-main.js.map": "/react-labyrinth/static/js/runtime-main.eae7df27.js.map",
+    "static/js/2.cbf43809.chunk.js": "/react-labyrinth/static/js/2.cbf43809.chunk.js",
+    "static/js/2.cbf43809.chunk.js.map": "/react-labyrinth/static/js/2.cbf43809.chunk.js.map",
+    "index.html": "/react-labyrinth/index.html",
+    "static/css/main.e7d71ea1.chunk.css.map": "/react-labyrinth/static/css/main.e7d71ea1.chunk.css.map",
+    "static/js/2.cbf43809.chunk.js.LICENSE.txt": "/react-labyrinth/static/js/2.cbf43809.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.eae7df27.js",
+    "static/js/2.cbf43809.chunk.js",
+    "static/css/main.e7d71ea1.chunk.css",
+    "static/js/main.fc96456d.chunk.js"
+  ]
+}
